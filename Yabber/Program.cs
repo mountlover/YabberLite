@@ -1,94 +1,66 @@
 ﻿using SoulsFormats;
 using SoulsFormats.AC4;
 using System;
-using System.Data;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
+using System.Runtime.Versioning;
 using System.Xml;
 
 namespace Yabber
 {
-    class Program
+    [SupportedOSPlatform("Windows7.0")]
+    public class Yabber
     {
+        public const string version = "1.0.0";
         static void Main(string[] args)
         {
-#if DEBUG
-            args = new string[] { @"C:\Users\Nord\Downloads\m12_01_00_00_GIIV0053_00_W.tpf" };
-#endif
             if (args.Length == 0)
             {
-                Assembly assembly = Assembly.GetExecutingAssembly();
                 Console.WriteLine(
-                    $"{assembly.GetName().Name} {assembly.GetName().Version}\n\n" +
-                    "Yabber+ has no GUI.\n" +
+                    $"YabberLite {version}\n\n" +
+                    "Yabber has no GUI.\n" +
                     "Drag and drop a file onto the exe to unpack it,\n" +
                     "or an unpacked folder to repack it.\n\n" +
                     "DCX files will be transparently decompressed and recompressed;\n" +
                     "If you need to decompress or recompress an unsupported format,\n" +
-                    "use Yabber+.DCX instead.\n\n" +
+                    "use Yabber.DCX instead.\n\n" +
                     "Press any key to exit."
                 );
                 Console.ReadKey();
                 return;
             }
 
-            bool pause = false;
+            bool error = false;
+            int errorcode = 0;
 
             foreach (string path in args)
             {
                 try
                 {
-                    int maxProgress = Console.WindowWidth - 1;
-                    int lastProgress = 0;
-
-                    void report(float value)
-                    {
-                        int nextProgress = (int)Math.Ceiling(value * maxProgress);
-                        if (nextProgress > lastProgress)
-                        {
-                            for (int i = lastProgress; i < nextProgress; i++)
-                            {
-                                if (i == 0)
-                                    Console.Write('[');
-                                else if (i == maxProgress - 1)
-                                    Console.Write(']');
-                                else
-                                    Console.Write('=');
-                            }
-
-                            lastProgress = nextProgress;
-                        }
-                    }
-
-                    IProgress<float> progress = new Progress<float>(report);
+                    IProgress<float> progress = new Progress<float>();
 
                     if (Directory.Exists(path))
                     {
-                        pause |= RepackDir(path, progress);
+                        error |= RepackDir(path, progress);
 
                     }
                     else if (File.Exists(path))
                     {
-                        pause |= UnpackFile(path, progress);
+                        error |= UnpackFile(path, progress);
                     }
                     else
                     {
-                        Console.WriteLine($"File or directory not found: {path}");
-                        pause = true;
-                    }
-
-                    if (lastProgress > 0)
-                    {
-                        progress.Report(1);
-                        Console.WriteLine();
+                        Console.Error.WriteLine($"ERROR: File or directory not found: {path}");
+                        errorcode = 2;
+                        error = true;
                     }
                 }
                 catch (DllNotFoundException ex) when (ex.Message.Contains("oo2core_6_win64.dll"))
                 {
-                    Console.WriteLine(
-                        "In order to decompress .dcx files from games, starting with Sekiro, you must copy ANY oo2core_6_win64.dll into Yabber's lib folder from a game that has it (hint: Elden Ring).");
-                    pause = true;
+                    Console.Error.WriteLine(
+                        "ERROR: oo2core_6_win64.dll not found. Please copy this library from the game directory to Yabber's directory.");
+                    errorcode = 3;
+                    error = true;
                 }
                 catch (UnauthorizedAccessException)
                 {
@@ -107,29 +79,30 @@ namespace Yabber
                 catch (FriendlyException ex)
                 {
                     Console.WriteLine();
-                    Console.WriteLine($"Error: {ex.Message}");
-                    pause = true;
+                    Console.Error.WriteLine($"ERROR: {ex.Message}");
+                    error = true;
+                    errorcode = 4;
                 }
-                //catch (Exception ex)
-                //{
-                //    Console.WriteLine();
-                //    Console.WriteLine($"Unhandled exception: {ex}");
-                //    pause = true;
-                //}
+                catch (Exception ex)
+                {
+                    Console.WriteLine();
+                    Console.Error.WriteLine($"ERROR: Unhandled exception: {ex}");
+                    error = true;
+                    errorcode = 1;
+                }
 
                 Console.WriteLine();
             }
 
-            if (pause)
+            if (error)
             {
-                Console.WriteLine("One or more errors were encountered and displayed above.\nPress any key to exit.");
-                Console.ReadKey();
+                Environment.Exit(errorcode);
             }
         }
-
+        [SupportedOSPlatform("Windows7.0")]
         private static bool UnpackFile(string sourceFile, IProgress<float> progress)
         {
-            string sourceDir = Path.GetDirectoryName(sourceFile);
+            string sourceDir = new FileInfo(sourceFile).Directory.FullName;;
             string fileName = Path.GetFileName(sourceFile);
             string targetDir = $"{sourceDir}\\{fileName.Replace('.', '-')}";
             if (File.Exists(targetDir))
