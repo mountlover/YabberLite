@@ -1,4 +1,4 @@
-# Yabber+
+# Yabber
 An unpacker/repacker for common Demon's Souls, Dark Souls 1-3, Bloodborne, Sekiro, Elden Ring file formats. Supports .bnd, .bhd/.bdt, .dcx, .fltparam, .fmg, .gparam, .luagnl, .luainfo, and .tpf.  
 In order to decompress .dcx files from games, starting with Sekiro, you must copy ANY oo2core_6_win64.dll into Yabber's lib folder from a game that has it (hint: Elden Ring).   
 Does not support dvdbnds (the very large bhd/bdt pairs in the main game directory); use [UDSFM](https://www.nexusmods.com/darksouls/mods/1304) or [UXM](https://www.nexusmods.com/sekiro/mods/26) to unpack those first.  
