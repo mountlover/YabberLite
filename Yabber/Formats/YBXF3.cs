@@ -5,7 +5,7 @@ using System.Xml;
 
 namespace Yabber
 {
-    static class YBXF3
+    public static class YBXF3
     {
         public static void Unpack(this BXF3Reader bxf, string bhdName, string bdtName, string targetDir, IProgress<float> progress)
         {

@@ -5,7 +5,7 @@ using System.Xml;
 
 namespace Yabber
 {
-    static class YBND3
+    public static class YBND3
     {
         public static void Unpack(this BND3Reader bnd, string sourceName, string targetDir, IProgress<float> progress)
         {

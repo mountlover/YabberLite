@@ -26,7 +26,7 @@ namespace Yabber
                     "use Yabber.DCX instead.\n\n" +
                     "Press any key to exit."
                 );
-                Console.ReadKey();
+                Console.ReadKey(true);
                 return;
             }
 

@@ -21,7 +21,7 @@ namespace Yabber
                     "or a decompressed file to recompress it.\n\n" +
                     "Press any key to exit."
                     );
-                Console.ReadKey();
+                Console.ReadKey(true);
                 return;
             }
 
