@@ -2,10 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Versioning;
 using System.Xml;
 
 namespace Yabber
 {
+    [SupportedOSPlatform("Windows7.0")]
     static class YBinder
     {
         public static void WriteBinderFiles(BinderReader bnd, XmlWriter xw, string targetDir, IProgress<float> progress)
@@ -93,14 +95,15 @@ namespace Yabber
                     throw new FriendlyException($"Could not parse compression type: {strCompression}\nCompression type must be a valid DCX Type.");
 
                 string inPath = $@"{sourceDir}\{Path.GetDirectoryName(path)}\{Path.GetFileNameWithoutExtension(path)}{suffix}{Path.GetExtension(path)}";
-                if (!File.Exists(inPath))
-                    throw new FriendlyException($"File not found: {inPath}");
-
-                byte[] bytes = File.ReadAllBytes(inPath);
-                bnd.Files.Add(new BinderFile(flags, id, name, bytes)
+                if (File.Exists(inPath))
                 {
-                    CompressionType = compressionType
-                });
+                    byte[] bytes = File.ReadAllBytes(inPath);
+                    bnd.Files.Add(new BinderFile(flags, id, name, bytes)
+                    {
+                        CompressionType = compressionType
+                    });
+                }
+                else Console.Error.WriteLine($@"Warning: File not found: {inPath}");
             }
         }
     }

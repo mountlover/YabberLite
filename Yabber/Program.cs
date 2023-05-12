@@ -11,7 +11,7 @@ namespace Yabber
     [SupportedOSPlatform("Windows7.0")]
     public class Yabber
     {
-        public const string version = "1.0.0";
+        public const string version = "1.0.1";
         static void Main(string[] args)
         {
             if (args.Length == 0)
