@@ -111,8 +111,6 @@ namespace Yabber
             if (fileName.Contains("regulation.bnd.dcx") || fileName.Contains("Data0") || fileName.Contains("regulation.bin") || fileName.Contains("regulation.bnd"))
                 return UnpackRegulationFile(fileName, sourceDir, targetDir, progress);
 
-
-
             if (DCX.Is(sourceFile))
             {
                 Console.WriteLine($"Decompressing DCX: {fileName}...");
