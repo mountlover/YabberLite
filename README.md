@@ -12,7 +12,17 @@ Please see the included readme for detailed instructions.
 *TKGP* - Everything else  
 *Nordgaren* - Yabber+ additions  
 
-# Changelog
+# YabberLite Changelog
+### 1.0.1 
+* Allowed for repacking binders with removed files
+
+### 1.0.0  
+* Fixed error where Yabber would unpack files to root directory
+* Added console based error handling
+* Ported to .NET 6.0 for long-term support
+* Removed TK's Progress bar
+
+# Yabber+ Changelog
 ### 1.0.1 
 * Minor fix to the Context menu registry (correct names)  
 * Made it impossible to use multiple `..\` in a file path
@@ -24,7 +34,7 @@ Please see the included readme for detailed instructions.
 * Fixed issue with files being written to incorrect folder, due to path traversal  
 * There are some fixes and upgrades that were commited by TK before I ever looked at the project, that are in this build as well  
 
-# Old Yabber Changelog
+# Yabber Changelog
 ### 1.3.1
 * DS2 .fltparams are now supported
 * BXF4 repacking fixed
